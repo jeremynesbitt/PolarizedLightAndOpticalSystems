@@ -56,3 +56,60 @@ figure;plot(theta,Rdia);
 xlabel('Angle of Incidence [deg]')
 ylabel('Diatenuation for Reflection');
 title('Figure 8.9b');
+
+%% Figures 8.15 and 8.16
+clear S % Just to be safe
+S(1) = tf_layer(@n_air); 
+S(2) = tf_layer(1.5);
+lambda = 0.550;
+theta = linspace(0,89,101);
+
+rs = tf_amp_vs_angle(S,lambda,theta, 's');
+rp = tf_amp_vs_angle(S,lambda,theta, 'p');
+
+figure;plot(theta, rs,theta,rp);
+xlabel('angle of incidence [deg]')
+ylabel('Fresnel Reflectance Coefficients')
+legend('s','p')
+title('Figure 8.15a - External Reflection');
+
+
+figure;plot(theta, angle(rs)-angle(rp));
+xlabel('angle of incidence [deg]')
+ylabel('Internal Reflection Relative Phase Shift [rad]')
+title('Figure 8.16a - Internal Reflection');
+
+% Switch to internal reflection example
+clear S
+S(1) = tf_layer(1.5); 
+S(2) = tf_layer(@n_air);
+
+rs = tf_amp_vs_angle(S,lambda,theta, 's');
+rp = tf_amp_vs_angle(S,lambda,theta, 'p');
+
+% This is the raw output of the tftb toolbox, which does not match the text. 
+% figure;plot(theta, real(rs),theta,real(rp));
+% xlabel('angle of incidence [deg]')
+% ylabel('Fresnel Reflectance Coefficients')
+% legend('s','p')
+% title('Figure 8.15b - Internal Reflection');
+
+% I am not sure how to properly plot this.  The modulus of the reflection
+% coefficient is 1 above the critical angle but is always positive.
+% the real part is negative but goes to 0 above the cricital angle. 
+% This is my hacked way to do it.
+rsPlot = real(rs);
+rsPlot(rs.*conj(rs) > 0.99) = 1.0;
+rpPlot = real(rp);
+rpPlot(rp.*conj(rp) > 0.99) = 1.0;
+
+figure;plot(theta, rsPlot,theta,rpPlot);
+xlabel('angle of incidence [deg]')
+ylabel('Fresnel Reflectance Coefficients')
+legend('s','p')
+title('Figure 8.15b - Internal Reflection');
+
+figure;plot(theta, angle(rs)-angle(rp));
+xlabel('angle of incidence [deg]')
+ylabel('Internal Reflection Relative Phase Shift [rad]')
+title('Figure 8.16b - Internal Reflection');
