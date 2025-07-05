@@ -9,6 +9,6 @@ function add_tftb_to_path()
 % 
 % Jeremy Nesbitt - 7/5/25
 
-addpath("../tftb-toolbox/");
+addpath("../../tftb-toolbox/");
 
 end
