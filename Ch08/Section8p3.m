@@ -44,3 +44,15 @@ ylabel('Fresnel Intensity Coefficient');
 legend('Ts','Tp','Rs','Rp','Location','west');
 title('Figure 8.8');
 
+%% Figure 8.9 - Diatenuation vs AOI for air/n=1.5 interface
+[Rdia, Tdia] = tf_dia_vs_angle(S,lambda, theta);
+
+figure;plot(theta,Tdia);
+xlabel('Angle of Incidence [deg]')
+ylabel('Diatenuation for Transmission');
+title('Figure 8.9a');
+
+figure;plot(theta,Rdia);
+xlabel('Angle of Incidence [deg]')
+ylabel('Diatenuation for Reflection');
+title('Figure 8.9b');
