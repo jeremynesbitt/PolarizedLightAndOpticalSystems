@@ -15,6 +15,14 @@ nk = evalnk(S, lambda);
 for l = 1:length(theta)
     [r(l), t(l)] = tf_ampl(d, nk, theta(l), pol);
 end
+% I want to "fix" the sign convention here to be consistent with the book.
+% but there is an ambiguity here since rp = -rp is the same as 
+% adding pi to the phase for a complex number.
+% I have hacked this to make r negative when the exit material is real
+% I am not comfortable with this.
 if pol=='p'
-     r = -r; % to be consistent with sign convention 
+
+    if (isreal(nk(end))) 
+     r = -r; % to be conistent with sign convention 
+    end
 end
