@@ -2,16 +2,26 @@
 % Systems
 % Jeremy Nesbitt -7/5/25
 % Use at your own risk - I make lots of mistakes
+addpath('..');
+add_tftb_to_path();
 
 % define multilayer stack
 S(1) = tf_layer(1.5);
 S(2) = tf_layer(@n_air); 
 lambda = 0.550;
+
+% For 3D plot
+theta = linspace(10,80,9);
+rs = tf_amp_vs_angle(S, lambda, theta, 's');
+figP = plotIncidentAndReflectedRays(theta,rs,'s');
+title('Figure 8.19c')
+
+
 theta = linspace(0,89,101);
-
-
 [Rs, Ts] = tf_rayfan(S,lambda,theta,'s');
 [Rp, Tp] = tf_rayfan(S,lambda,theta,'p');
+
+
 
 figure;plot(theta, [Rs,Rp]);
 xlabel('angle of incidende [deg]')
