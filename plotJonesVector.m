@@ -22,7 +22,7 @@ plot(real(ex),real(ey),'LineWidth',8);
 h = 0.2; % height of arrow (relative to magnitude)
 aT = 5*pi/180; % angle of arrow triangle 
 
-if isreal(jin(1)) & isreal(jin(2)) % Linear pol
+if isreal(jin(1)) && isreal(jin(2)) % Linear pol
     phi = atan2(jin(2),jin(1));
     v1 = [jin(1);jin(2)]; 
     dr = [cos(phi); sin(phi)];
@@ -36,63 +36,39 @@ if isreal(jin(1)) & isreal(jin(2)) % Linear pol
     xlim([-magnitude,magnitude]);
     ylim([-magnitude,magnitude]);   
 else % some form of circular
-    phi = angle(jin(2));
-    theta0 = -pi/6; % pick an angle
-        ex0 = exp(-1i*theta0)*jin(1);
-        ey0 = exp(-1i*theta0)*jin(2);
 
-        phi = atan2(real(ey0),real(ex0));
-        dr = [cos(phi); sin(phi)];
-        dphi = [-sin(phi);cos(phi)];
+    theta0 = -pi/6; % pick an angle.  TODO make optional input
+    ex0 = exp(-1i*theta0)*jin(1);
+    ey0 = exp(-1i*theta0)*jin(2);
 
+    v1 = [real(ex0);real(ey0)];
 
-        v1 = [real(ex0);real(ey0)];
-        % essentially switched from linear.
-              
-        %dr = v1/sqrt(sum(v1.*v1));
-        %dphi = [-sin(theta0);cos(theta0)];
+    % Use finite differences to find dphi/dr.  May be a more elegant
+    % way but this works for circular/elliptical
+    dtta = .01;
+    dex0 = exp(-1i*(theta0+dtta))*jin(1);
+    dey0 = exp(-1i*(theta0+dtta))*jin(2); 
+    dphi = 1./(theta0-dtta).*[real(ex0-dex0);real(ey0-dey0)];
+    dphi = dphi*1/sqrt(sum(dphi.*dphi));
+    dr = [-dphi(2); dphi(1)];
+        
+    % Essentially switched vectors from linear
+    vb = v1-h*dphi;
+    
+    % Debug - plot dphi and dr.  
+    %hold on;
+    %plot([v1(1),vb(1)],[v1(2),vb(2)], 'r')
+    %plot([v1(1),v1(1)-h*dr(1)],[v1(2),v1(2)-h*dr(2)],'g')        
 
-        vb = v1-sign(angle(jin(2)))*h*dphi;
+        
+    v2 = vb+tan(aT)*dr;
+    v3 = vb-tan(aT)*dr;
+    triMat = [v1,v2,v3];
+    hold on;
+    fill(triMat(1,:),triMat(2,:),'b');
+    xlim([-magnitude,magnitude]);
+    ylim([-magnitude,magnitude]); 
 
-        % Debug - plot dphi and dr.  
+end % Is real if
 
-
-        % Use finite differences
-        dtta = .01;
-        dex0 = exp(-1i*(theta0+dtta))*jin(1);
-        dey0 = exp(-1i*(theta0+dtta))*jin(2); 
-        dphi = 1./(theta0-dtta).*[real(ex0-dex0);real(ey0-dey0)];
-        dphi = dphi*1/sqrt(sum(dphi.*dphi));
-
-        %vb = v1-sign(angle(jin(2)))*h*dphi;
-        vb = v1-h*dphi;
-        dr = [-dphi(2); dphi(1)];
-
-        hold on;
-        plot([v1(1),vb(1)],[v1(2),vb(2)], 'r')
-        plot([v1(1),v1(1)-h*dr(1)],[v1(2),v1(2)-h*dr(2)],'g')        
-
-
-        v2 = vb+tan(aT)*dr;
-        v3 = vb-tan(aT)*dr;
-        triMat = [v1,v2,v3];
-        hold on;
-        fill(triMat(1,:),triMat(2,:),'b');
-        xlim([-magnitude,magnitude]);
-        ylim([-magnitude,magnitude]); 
-
-    end
-
-
-
-end
-
-    % if jin(1) == 0 % V pol
-    %     v1 = [jin(1);jin(2)]; 
-    %     v2 = [-(v1(2)-h*magnitude)*tan(aT);(v1(2)-h*magnitude)];
-    %     v3 = [+(v1(2)-h*magnitude)*tan(aT);(v1(2)-h*magnitude)];
-    %     triMat = [v1,v2,v3];
-    %     hold on;
-    %     fill(triMat(1,:),triMat(2,:),'b');
-    %     xlim([-magnitude,magnitude]);
-    %     ylim([-magnitude,magnitude]);
+end % function
