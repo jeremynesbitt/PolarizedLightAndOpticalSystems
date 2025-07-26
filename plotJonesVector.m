@@ -1,4 +1,4 @@
-function figJ = plotJonesVector(jin)
+function plotJonesVector(jin)
 % Fancy plot of jones vector (with arrow!)
 % Note for people like me who tend to forget.  
 % The plots here are done by remembering that the E field varies
@@ -15,8 +15,8 @@ theta = linspace(0,2*pi,101);
 ex = exp(-1i*theta)*jin(1);
 ey = exp(-1i*theta)*jin(2);
 
-figJ = figure;
-plot(real(ex),real(ey),'LineWidth',8);
+%figJ = figure;
+plot(real(ex),real(ey),'LineWidth',6);
 
 % Now the hard part.  drawing the arrow correctly.  
 h = 0.2; % height of arrow (relative to magnitude)
